@@ -7,7 +7,6 @@
 
 /* Put your CSS here */
 .ember-application {
-  margin: 20px;
 }
 
 .background-view {
@@ -23,4 +22,13 @@
   padding: 1em;
   font-size: 5em;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.33);
+}
+
+.barra {
+  margin: 20px;
+}
+
+
+.modo-edicion {
+  margin: 20px;
 }

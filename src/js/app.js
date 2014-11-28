@@ -1,14 +1,28 @@
+var gui = require('nw.gui');
+var util = require('util');
+var fs = require('fs');
+
 App = Ember.Application.create();
 
+function exit(mensaje) {
+  alert(mensaje);
+  gui.App.quit();
+}
 
-var util = require('util');
+if (!fs.existsSync('../node_modules/twitter/index.js'))
+  exit("No se encuentra la biblioteca twitter, ejecuta el comando 'make deps' antes.");
+
+if (!fs.existsSync('../src/setup.json'))
+  exit("Imposible encontrar el archivo 'src/setup.json', tienes que configurarlo antes de continuar.");
+
+
 var twitter = require('twitter');
 
 // Variables de acceso global:
-var stream = null;
 var lista_de_twits = [];
 var lista_de_twits_data = [];
 var twit;
+
 
 var setup = require('../src/setup.json');
 
@@ -19,24 +33,6 @@ window.twit = new twitter({
   access_token_secret: setup.access_token_secret,
 });
 
-/*
-function reiniciar(busqueda) {
-
-  twit.search('#boca', function(data) {
-
-    for (var i in data.statuses) {
-      var texto = data.statuses[i].text;
-
-      if (lista_de_twits.indexOf(texto) == -1) {
-        lista_de_twits.push(texto);
-        lista_de_twits_data.push(data.statuses[i]);
-      }
-    }
-  });
-
-}
-
-*/
 function actualizar_twits(data) {
   for (var i in data.statuses) {
     var texto = data.statuses[i].text;
@@ -49,14 +45,7 @@ function actualizar_twits(data) {
 }
 
 App.Router.map(function() {
-  this.route('view');
-  this.route('setup', {path: '/'});
-});
 
-App.SetupRoute = Ember.Route.extend({
-  model: function() {
-    return ['red', 'yellow', 'blue'];
-  }
 });
 
 
@@ -69,26 +58,42 @@ function cargar_siguiente_twit(controller) {
   if (indice < twits.length -1) {
     indice += 1;
     controller.set('indice_ultimo_twit', indice);
-    } else {
+  } else {
       console.log("eh, no hay tantos twits como para mostrar ahora... me quedo en el último por ahora...");
-    }
+  }
 
   controller.set('ultimo_twit', twits[indice]);
+  controller.set('ultimo_twit_safe', twits[indice].htmlSafe());
+
   window.ultimo_twit = twits[indice];
   window.ultimo_twit_data = lista_de_twits_data[indice];
 }
 
 
 
-App.SetupController = Ember.ObjectController.extend({
+App.IndexController = Ember.ObjectController.extend({
   nombre: "",
   cantidad: 0,
   tick: 4,
+  modo_edicion: true,
   twits_encontrados: [],
   ultimo_twit: "...",
+  busqueda: 'programar',
+  ultimo_twit_safe: "safe ...",
   indice_ultimo_twit: -1,
   iniciar: function() {
+
     var controller = this;
+
+    /*
+    lista_de_twits = [];
+    lista_de_twits_data = [];
+
+    controller.set('cantidad', lista_de_twits.length);
+    controller.set('tick', controller.get('tick') + 1);
+    controller.set('twits_encontrados', lista_de_twits);
+
+      */
 
     /*
      * Actualiza el último twit a mostrar en pantalla
@@ -104,7 +109,7 @@ App.SetupController = Ember.ObjectController.extend({
     function buscar() {
       console.log("Buscando (cada 10 segundos)...");
 
-      twit.search('#boca', function(data) {
+      twit.search(controller.get('busqueda'), function(data) {
         actualizar_twits(data);
         controller.set('cantidad', lista_de_twits.length);
         controller.set('tick', controller.get('tick') + 1);
@@ -112,21 +117,23 @@ App.SetupController = Ember.ObjectController.extend({
         evaluar_tick_de_twit();
       });
 
-      setTimeout(buscar, 10000);
+      setTimeout(buscar, 5000);
     }
 
     buscar();
 
-
   }.on('init'),
   actions: {
     guardar: function() {
-      alert('guardando !!!');
-      this.transitionTo('view');
+      this.set('modo_edicion', false);
+      this.iniciar();
     },
     saltar_este_twit: function() {
       cargar_siguiente_twit(this);
     },
+    configurar: function() {
+      this.set('modo_edicion', true);
+    }
   }
 })
 
