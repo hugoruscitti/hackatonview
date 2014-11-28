@@ -1,4 +1,26 @@
+@font-face {
+  font-family: 'open_sansbold';
+  src: url('../fonts/OpenSans-Bold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* Put your CSS here */
 .ember-application {
-    margin: 20px;
+  margin: 20px;
+}
+
+.background-view {
+  background-image: url('../images/bg.jpg');
+  background-size: cover;
+}
+
+.view {
+  background-image: url('../images/png.png');
+  font-family: 'open_sansbold', sans-serif;
+  color: white;
+  border: 1px solid gray;
+  padding: 1em;
+  font-size: 5em;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.33);
 }

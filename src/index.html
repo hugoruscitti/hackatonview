@@ -5,6 +5,17 @@
   <title>Ember Starter Kit</title>
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/style.css">
+
+
+  <!-- estilos -->
+  <link rel="stylesheet" href="css/estilo.css" charset="utf-8">
+  <link rel="stylesheet" href="css/bootstrap.min.css" charset="utf-8">
+  <link rel="stylesheet" href="css/fuentes.css" charset="utf-8">
+  <link rel="stylesheet" href="css/AdminLTE.css" charset="utf-8">
+  <link rel="stylesheet" href="css/custom.css" charset="utf-8">
+  <link rel="stylesheet" href="css/ui-layout.css" charset="utf-8">
+
+
 </head>
 <body>
 <script type="text/x-handlebars">
@@ -20,10 +31,14 @@
 <p>tick: {{tick}}</p>
 <p>cantidad: {{cantidad}}</p>
 
-<pre>
-{{ultimo_twit}}
-{{ultimo_twit.text}}
-</pre>
+<p><button {{action "saltar_este_twit"}}>Saltar este twit</button>
+
+<div class='background-view'>
+  <div class='view'>
+    {{ultimo_twit}}
+  </div>
+</div>
+
 
 <form>
 
